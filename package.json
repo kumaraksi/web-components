@@ -1,0 +1,16 @@
+{
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "test": "jest",
+        "start": "lerna run start",
+        "build": "lerna run build"
+    },
+    "version": "1.0.2",
+    "devDependencies": {
+        "lerna": "^3.4.0"
+    },
+    "name": "risk-ident"
+}

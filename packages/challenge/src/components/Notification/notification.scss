@@ -1,0 +1,10 @@
+.notification{
+    background-color: var(--main-bg-color)
+}
+
+:host{
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    width: 200px;
+}
