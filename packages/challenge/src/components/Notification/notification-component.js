@@ -1,7 +1,6 @@
 import { Notification } from "./notification";
 import {EventBus} from '../../EventBus';
 
-(function () {
 	const notificationContainer = document.createElement('template');
 	notificationContainer.innerHTML = `
 	<style>
@@ -112,73 +111,75 @@ import {EventBus} from '../../EventBus';
 	</div>
 	`;
 
-	class NotificationWrapper extends HTMLElement{
 
-		constructor(){
-            super();
-			this.maxNotifications = 5;
-			this.notifications = 0;
-			this.pendingNotifications = [];
-			this.attachShadow({ mode: 'open' });
-			this.shadowRoot.appendChild(notificationContainer.content.cloneNode(true));
-			this.eventBus = EventBus.getInstance();
-			this.eventBus.subscribe('createNotification',this.createNotification.bind(this));
-			this.eventBus.subscribe('destroyNotification',this.removeNotification.bind(this));
-		}
+export class NotificationWrapper extends HTMLElement{
 
-		redrawContainer(){
-			this.shadowRoot.removeChild();
-			for(const notif in this.notifications){
-				this.shadowRoot.appendChild(notif.content.cloneNode(true))
-			}
-		}
+	constructor(){
+		super();
+		this.maxNotifications = 5;
+		this.notifications = 0;
+		this.pendingNotifications = [];
+		this.attachShadow({ mode: 'open' });
+		this.shadowRoot.appendChild(notificationContainer.content.cloneNode(true));
+		this.eventBus = EventBus.getInstance();
+		this.eventBus.subscribe('createNotification',this.createNotification.bind(this));
+		this.eventBus.subscribe('destroyNotification',this.removeNotification.bind(this));
+	}
 
-		generateNotificationContainer(){
-			return template;		
+	redrawContainer(){
+		this.shadowRoot.removeChild();
+		for(const notif in this.notifications){
+			this.shadowRoot.appendChild(notif.content.cloneNode(true))
 		}
+	}
 
-		createNotification(type){
-			this.notifications++;
-			const notification = this.getNotificationTemplate(type);
-			if(this.notifications <= this.maxNotifications){
-				this.shadowRoot.appendChild(notification.content.cloneNode(true))
-			}
-			else{
-				this.pendingNotifications.push(notification)
-			}
-		}
-		
-		removeNotification(evt){
-			this.notifications--;
-			if(this.pendingNotifications.length > 0){
-				this.shadowRoot.appendChild(this.pendingNotifications[0].content.cloneNode(true))
-				this.pendingNotifications = this.pendingNotifications.splice(1,this.pendingNotifications.length)	
-			}
-		}
+	generateNotificationContainer(){
+		return template;		
+	}
 
-		getNotificationTemplate(type){
-			const temp = document.createElement('template')
-			temp.innerHTML = `
-				<notification-el type=${type}></notification-el>
-			`;
-			return temp;	
-		}        
+	createNotification(type){
+		this.notifications++;
+		const notification = this.getNotificationTemplate(type);
+		if(this.notifications <= this.maxNotifications){
+			this.shadowRoot.appendChild(notification.content.cloneNode(true))
+		}
+		else{
+			this.pendingNotifications.push(notification)
+		}
+	}
+	
+	removeNotification(evt){
+		this.notifications--;
+		if(this.pendingNotifications.length > 0){
+			this.shadowRoot.appendChild(this.pendingNotifications[0].content.cloneNode(true))
+			this.pendingNotifications = this.pendingNotifications.splice(1,this.pendingNotifications.length)	
+		}
+	}
 
-		// triggered once the element is added to the DOM.
-		connectedCallback(){
-            // document.querySelector('notification-el').addEventListener('notificationCreated', function (e) {
-            //     console.log(e); // true
-			// })
-			console.log(this.eventBus)
-		}
-		
-		// triggered once the element is removed to the DOM.
-		disconnectedCallback(){
-			
-		}
+	getNotificationTemplate(type){
+		const temp = document.createElement('template')
+		temp.innerHTML = `
+			<notification-el type=${type}></notification-el>
+		`;
+		return temp;	
+	}        
+
+	// triggered once the element is added to the DOM.
+	connectedCallback(){
+		// document.querySelector('notification-el').addEventListener('notificationCreated', function (e) {
+		//     console.log(e); // true
+		// })
+		console.log(this.eventBus)
+	}
+	
+	// triggered once the element is removed to the DOM.
+	disconnectedCallback(){
 		
 	}
 	
+}
+
+(function(){
 	window.customElements.define('notification-el', Notification);
 	window.customElements.define('notification-component', NotificationWrapper);
-})();
+})()
