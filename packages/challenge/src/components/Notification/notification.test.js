@@ -1,4 +1,4 @@
-import 'document-register-element'
+import 'document-register-element';
 
 import { Notification } from "./notification";
 import { NotificationWrapper } from "./notification-component";
